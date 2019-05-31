@@ -8,8 +8,8 @@ public class login_presenter extends BasePresenter<login_contract.login_ViewInte
     login_model loginModel = null;
     login_contract.login_ModelInterface.Login_Return login_return = new login_contract.login_ModelInterface.Login_Return() {
         @Override
-        public void BackWith_FaceRepeat() {
-            getView().ShowDialogWith("该人脸已经被注册！");
+        public void BackWith_FaceRepeat(String name) {
+            getView().ShowDialogWith("该人脸已经被" + name + "注册！");
         }
 
         @Override
@@ -20,6 +20,10 @@ public class login_presenter extends BasePresenter<login_contract.login_ViewInte
         @Override
         public void BackWith_FaceSuccess() {
             getView().ShowDialogWith("人脸注册成功！");
+        }
+        @Override
+        public void BackWith_FaceFail(){
+            getView().ShowDialogWith("人脸识别失败！");
         }
     };
 
@@ -50,7 +54,7 @@ public class login_presenter extends BasePresenter<login_contract.login_ViewInte
 
     @Override
     public void Register_Submit(String name, String account){
-        //loginModel
+        loginModel.CheckOut_Count(name,account,login_return);
     }
 
 }

@@ -20,11 +20,13 @@ public interface login_contract {
     }
 
     interface login_ModelInterface{
+        void CheckOut_Count(String name,String account,Login_Return login_return);
         //在model中先做if判断，继而可调用摄像头回传数据
         interface Login_Return{
-            void BackWith_FaceRepeat();
+            void BackWith_FaceRepeat(String name);
             void BackWith_NameRepeat();
             void BackWith_FaceSuccess();
+            void BackWith_FaceFail();
         }
     }
 }
