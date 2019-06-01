@@ -12,7 +12,6 @@
         android:layout_marginRight="120dp"
         android:layout_marginBottom="148dp"
         android:hint="注册"
-        android:onClick="Check"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -20,8 +19,8 @@
 
     <EditText
         android:id="@+id/number"
-        android:layout_width="209dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="324dp"
         android:layout_marginEnd="96dp"
         android:layout_marginRight="96dp"
