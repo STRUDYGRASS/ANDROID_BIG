@@ -2,7 +2,7 @@ package com.example.andorid_big.Base;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public abstract class BaseActivity <ViewInterface,P extends BasePresenter<ViewInterface>> extends Activity {
     P mPresenter;
