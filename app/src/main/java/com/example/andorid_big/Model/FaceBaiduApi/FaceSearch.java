@@ -1,14 +1,14 @@
 package com.example.andorid_big.Model.FaceBaiduApi;
 
-import com.baidu.ai.aip.utils.GsonUtils;
 import com.baidu.ai.aip.utils.HttpUtil;
+import com.baidu.ai.aip.utils.GsonUtils;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import static com.example.andorid_big.Model.FaceBaiduApi.AuthService.getAuth;
-
-public class FaceAdd {
+/**
+ * 人脸搜索
+ */
+public class FaceSearch {
 
     /**
      * 重要提示代码中所需工具类
@@ -19,18 +19,16 @@ public class FaceAdd {
      * https://ai.baidu.com/file/470B3ACCA3FE43788B5A963BF0B625F3
      * 下载
      */
-    public static String add(String user1,String image,String AccessToken) {
+    public static String search(String image,String AccessToken) {
         // 请求url
-        String url = "https://aip.baidubce.com/rest/2.0/face/v3/faceset/user/add";
+        String url = "https://aip.baidubce.com/rest/2.0/face/v3/search";
         try {
             Map<String, Object> map = new HashMap<>();
             map.put("image", image);
-            map.put("group_id", "group_repeat");//示例中不进行分组
-            map.put("user_id", user1);
-            map.put("user_info", "abc");
-            map.put("liveness_control", "NONE"); //不进行活体检测
-            map.put("image_type", "BASE64");
-            map.put("quality_control", "NORMAL");
+            map.put("liveness_control", "NORMAL");
+            map.put("group_id_list", "group_repeat,group_233");
+            map.put("image_type", "FACE_TOKEN");
+            map.put("quality_control", "LOW");
 
             String param = GsonUtils.toJson(map);
 
@@ -47,4 +45,3 @@ public class FaceAdd {
     }
 
 }
-
