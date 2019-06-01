@@ -2,6 +2,7 @@ package com.example.andorid_big.Model;
 
 import com.example.andorid_big.Contract.login_contract;
 import com.example.andorid_big.Model.FaceBaiduApi.AuthService;
+import com.example.andorid_big.Model.FaceBaiduApi.FaceAdd;
 
 public class login_model implements login_contract.login_ModelInterface{
     private String AccessToken;
@@ -18,5 +19,6 @@ public class login_model implements login_contract.login_ModelInterface{
 //        else{ //进入人脸识别界面
 //
 //        }
+        FaceAdd.add("1","i",AccessToken);
             }
 }

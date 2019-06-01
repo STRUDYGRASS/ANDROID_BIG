@@ -10,14 +10,24 @@ import com.example.andorid_big.Presenter.login_presenter;
 import com.example.andorid_big.R;
 import com.example.andorid_big.Contract.login_contract;
 
+
 public class MainActivity extends BaseActivity<login_contract.login_ViewInterface, login_presenter> implements login_contract.login_ViewInterface{
 
+    Button btn_main_register;
     login_presenter mlogin_presenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main_interface);
         mlogin_presenter = getPresenter();
+        btn_main_register = findViewById(R.id.btn_main_register);
+
+        btn_main_register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mlogin_presenter.Login_Register_Check();
+            }
+        });
         //指定人脸注册按钮，并设定跳转到Checkin_Regester函数切换布局
         //签到页面同上跳转,记录同理(内部控件目前需要一种方法使得切换布局就调用控件获取数据，可写在跳转按钮中（切记符合MVP架构）)
         //指定注册页面的注册按钮，跳转到注册事件
@@ -36,12 +46,12 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
 
     @Override
     public void Checkin_Regester(){
-        setContentView(R.layout.activity_main);//layout待写
+        setContentView(R.layout.register);
     }
 
     @Override
     public void Checkin_Login(){
-        setContentView(R.layout.activity_main);//layout待写
+        setContentView(R.layout.interface_signin);
     }
 
     @Override
@@ -51,6 +61,6 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
 
     @Override
     public void Checkin_Main(){
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main_interface);
     }
 }
