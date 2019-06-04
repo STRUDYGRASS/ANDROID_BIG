@@ -1,2 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <array name="选择">
+        <item>日期</item>
+        <item>学生</item>
+    </array>
+</resources>
