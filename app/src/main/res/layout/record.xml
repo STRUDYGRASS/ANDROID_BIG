@@ -16,22 +16,25 @@
         android:gravity="center"
         android:id="@+id/record"/>
 
-
-
     <Spinner
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:id="@+id/record_date"
         android:layout_below="@id/record"
-        android:gravity="center"
-        android:entries="@id/date_person"
-        android:layout_toRightOf="@id/date_person"></Spinner>
+        android:entries="@array/选择"></Spinner>
+
+    <Spinner
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:id="@+id/selected"
+        android:layout_below="@id/record"
+        android:layout_toRightOf="@id/record_date"></Spinner>
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/record_data"
-        android:layout_below="@id/date_person"></ListView>
+        android:id="@+id/data_record"
+        android:layout_below="@id/record_date"></ListView>
 
 </RelativeLayout>
 
