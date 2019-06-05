@@ -29,7 +29,7 @@ public class FaceAdd {
             map.put("user_id", user1);
             map.put("user_info", "abc");
             map.put("liveness_control", "NONE"); //不进行活体检测
-            map.put("image_type", "BASE64");
+            map.put("image_type", "FACE_TOKEN");
             map.put("quality_control", "NORMAL");
 
             String param = GsonUtils.toJson(map);

@@ -10,8 +10,20 @@ import lombok.Setter;
 public class FaceAddReturn {
     @Getter
     @Setter
-    private String face_token;
+    private int error_code;
     @Getter
     @Setter
-    private FaceAddLocation location;
+    private String error_msg;
+    @Getter
+    @Setter
+    private long log_id;
+    @Getter
+    @Setter
+    private long timestamp;
+    @Getter
+    @Setter
+    private int cached;
+    @Getter
+    @Setter
+    private FaceAddResult result;
 }
