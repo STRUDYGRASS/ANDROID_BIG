@@ -1,5 +1,7 @@
 package com.example.andorid_big.Presenter;
 
+import android.net.Uri;
+
 import com.example.andorid_big.Base.BasePresenter;
 import com.example.andorid_big.Contract.login_contract;
 import com.example.andorid_big.Model.login_model;
@@ -24,6 +26,10 @@ public class login_presenter extends BasePresenter<login_contract.login_ViewInte
         @Override
         public void BackWith_FaceFail(){
             getView().ShowDialogWith("人脸识别失败！");
+        }
+        @Override
+        public void Start_Camera_Log(){
+             getView().Start_Camera_Log();
         }
     };
 
@@ -55,6 +61,11 @@ public class login_presenter extends BasePresenter<login_contract.login_ViewInte
     @Override
     public void Register_Submit(String name, String account){
         loginModel.CheckOut_Count(name,account,login_return);
+    }
+
+    @Override
+    public void FaceCheck_Log(byte[] bt){
+        loginModel.FaceCheck_Log(bt);
     }
 
 }
