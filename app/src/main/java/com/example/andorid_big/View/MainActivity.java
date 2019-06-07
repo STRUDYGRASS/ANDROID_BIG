@@ -65,6 +65,11 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
     @Override
     public void Checkin_Login(){
         setContentView(R.layout.interface_signin);
+
+    }
+
+    public void Interface_return(View view){
+        finish();
     }
 
     @Override
