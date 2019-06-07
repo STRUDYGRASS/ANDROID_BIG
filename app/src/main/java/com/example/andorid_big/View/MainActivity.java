@@ -52,8 +52,11 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
 
     public void Register_log(View view) {
         String str_name = text_register_name.getText().toString(), str_account = text_register_account.getText().toString();
-        if (str_account != null && str_name != null) {
+        if (str_account.length() >0 && str_name.length() > 0) {
             mlogin_presenter.Register_Submit(str_name, str_account);
+        }
+        else{
+            mlogin_presenter.getView().ShowDialogWith("必须输入姓名和学号！");
         }
     }
 

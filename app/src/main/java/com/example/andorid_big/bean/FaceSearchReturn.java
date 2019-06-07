@@ -13,8 +13,20 @@ import lombok.Setter;
 public class FaceSearchReturn {
     @Getter
     @Setter
-    private String face_token;
+    private int error_code;
     @Getter
     @Setter
-    private List<FaceSearchResult> searchResults;
+    private String error_msg;
+    @Getter
+    @Setter
+    private long log_id;
+    @Getter
+    @Setter
+    private long timestamp;
+    @Getter
+    @Setter
+    private int cached;
+    @Getter
+    @Setter
+    private FaceSearchResult result;
 }

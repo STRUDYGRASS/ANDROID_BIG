@@ -31,6 +31,10 @@ public class login_presenter extends BasePresenter<login_contract.login_ViewInte
         public void Start_Camera_Log(){
              getView().Start_Camera_Log();
         }
+        @Override
+        public void Back_ChangetoMain(){
+            getView().Checkin_Main();
+        }
     };
 
     public login_presenter(login_contract.login_ViewInterface v){
@@ -65,7 +69,7 @@ public class login_presenter extends BasePresenter<login_contract.login_ViewInte
 
     @Override
     public void FaceCheck_Log(byte[] bt){
-        loginModel.FaceCheck_Log(bt);
+        loginModel.FaceCheck_Log(bt,login_return);
     }
 
 }

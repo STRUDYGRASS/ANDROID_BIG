@@ -34,10 +34,12 @@ public interface login_contract {
             void BackWith_NameRepeat();
             void BackWith_FaceSuccess();
             void BackWith_FaceFail();
+            /**********还需要把回调界面放到model中******/
+            void Back_ChangetoMain();
             /******************尝试调用************/
             void Start_Camera_Log();
         }
         /********************相机*******************/
-        void FaceCheck_Log(byte[] bt);
+        void FaceCheck_Log(byte[] bt,Login_Return login_return);
     }
 }

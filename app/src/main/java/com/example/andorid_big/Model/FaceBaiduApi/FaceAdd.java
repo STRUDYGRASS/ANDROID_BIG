@@ -1,5 +1,8 @@
 package com.example.andorid_big.Model.FaceBaiduApi;
 
+import android.util.Base64;
+
+import com.baidu.ai.aip.utils.Base64Util;
 import com.baidu.ai.aip.utils.GsonUtils;
 import com.baidu.ai.aip.utils.HttpUtil;
 
@@ -19,17 +22,17 @@ public class FaceAdd {
      * https://ai.baidu.com/file/470B3ACCA3FE43788B5A963BF0B625F3
      * 下载
      */
-    public static String add(String user1,String image,String AccessToken) {
+    public static String add(String user1, String image, String AccessToken) {
         // 请求url
         String url = "https://aip.baidubce.com/rest/2.0/face/v3/faceset/user/add";
         try {
             Map<String, Object> map = new HashMap<>();
-            map.put("image", image);
+            map.put("image", image);//027d8308a2ec665acb1bdf63e513bcb9
             map.put("group_id", "group_repeat");//示例中不进行分组
             map.put("user_id", user1);
             map.put("user_info", "abc");
             map.put("liveness_control", "NONE"); //不进行活体检测
-            map.put("image_type", "FACE_TOKEN");
+            map.put("image_type", "BASE64");//FACE_TOKEN
             map.put("quality_control", "NORMAL");
 
             String param = GsonUtils.toJson(map);
