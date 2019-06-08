@@ -25,9 +25,9 @@ public class FaceSearch {
         try {
             Map<String, Object> map = new HashMap<>();
             map.put("image", image);
-            map.put("liveness_control", "NORMAL");
+            map.put("liveness_control", "NONE");
             map.put("group_id_list", "group_repeat,group_233");
-            map.put("image_type", "FACE_TOKEN");
+            map.put("image_type", "BASE64");
             map.put("quality_control", "LOW");
 
             String param = GsonUtils.toJson(map);

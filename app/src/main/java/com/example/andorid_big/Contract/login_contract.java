@@ -1,5 +1,7 @@
 package com.example.andorid_big.Contract;
 
+import android.net.Uri;
+
 public interface login_contract {
     interface login_ViewInterface{
         void ShowDialogWith(String str);
@@ -7,6 +9,9 @@ public interface login_contract {
         void Checkin_Login();
         void Checkin_Login_Log();
         void Checkin_Main();
+
+        void Start_Camera_Log();
+        void FaceCheck(byte[] bt);
     }
 
     interface login_PresenterInterface{
@@ -17,6 +22,8 @@ public interface login_contract {
         void Main_Check();
         /***************************函数调用*****************************/
         void Register_Submit(String name, String account);
+
+        void FaceCheck_Log(byte[] bt);
     }
 
     interface login_ModelInterface{
@@ -27,6 +34,12 @@ public interface login_contract {
             void BackWith_NameRepeat();
             void BackWith_FaceSuccess();
             void BackWith_FaceFail();
+            /**********还需要把回调界面放到model中******/
+            void Back_ChangetoMain();
+            /******************尝试调用************/
+            void Start_Camera_Log();
         }
+        /********************相机*******************/
+        void FaceCheck_Log(byte[] bt,Login_Return login_return);
     }
 }

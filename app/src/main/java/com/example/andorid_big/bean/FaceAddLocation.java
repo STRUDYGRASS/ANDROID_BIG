@@ -1,8 +1,12 @@
 package com.example.andorid_big.bean;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@AllArgsConstructor
+@NoArgsConstructor
 public class FaceAddLocation {
     @Getter
     @Setter
