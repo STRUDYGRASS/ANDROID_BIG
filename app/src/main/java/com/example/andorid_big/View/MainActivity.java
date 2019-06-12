@@ -99,23 +99,23 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
 
     @Override
     public void Start_Camera_Log(){ //相机能力有限，调用api了
-        // 记录文件保存位置
-         String mFilePath;
-         FileInputStream is = null;
-
-        // 获取SD卡路径
-        mFilePath = Environment.getExternalStorageDirectory().getPath();
-        // 文件名
-        mFilePath = mFilePath + "/" + "photo.png";
+//        // 记录文件保存位置
+//         String mFilePath;
+//         FileInputStream is = null;
+//
+//        // 获取SD卡路径
+//        mFilePath = Environment.getExternalStorageDirectory().getPath();
+//        // 文件名
+//        mFilePath = mFilePath + "/" + "photo.png";
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); //指定拍照
 //        Uri uri = Uri.fromFile(new File(mFilePath));
 //        contentUri = FileProvider.getUriForFile(this, "com.example.andorid_big.provider", new File(mFilePath));
 //        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 //        intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 楼主少了这个。没有这个finsh 无法返回的
         startActivityForResult(intent,LOG_FACE_CODE);
         //while (!Camera_Mark); //等待相机回调
-        Camera_Mark = false;
 //        if (Photo_Uri != null) {
 //            return Photo_Uri.toString();
 //        }

@@ -33,7 +33,7 @@ public class login_model implements login_contract.login_ModelInterface{
     private FaceSearchReturn faceSearchReturn = null;
 
 
-    public login_model() {//初始化数据库和人脸识别服务以及线程
+    public login_model() {//初始化数据库和人脸识别服务以及线程//考虑增加权限检测
         new Thread() {
             @Override
             public void run(){
@@ -41,7 +41,7 @@ public class login_model implements login_contract.login_ModelInterface{
             }
         }.start();
 
-        pool = Executors.newFixedThreadPool(2);
+        pool = Executors.newFixedThreadPool(5);
         //创建实现了Runnable接口对象，Thread对象当然也实现了Runnable接口
     }
 
