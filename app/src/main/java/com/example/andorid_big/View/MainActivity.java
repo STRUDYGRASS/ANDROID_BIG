@@ -80,6 +80,7 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
         setContentView(R.layout.register);
         text_register_name = findViewById(R.id.text_register_name);
         text_register_account = findViewById(R.id.text_register_account);
+
     }
 
     @Override

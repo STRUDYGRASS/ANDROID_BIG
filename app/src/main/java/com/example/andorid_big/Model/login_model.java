@@ -19,12 +19,16 @@ import com.google.gson.Gson;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class login_model implements login_contract.login_ModelInterface{
-    private String AccessToken;
-
+    private String AccessToken,name,account;
+    private boolean return_value=true;
     private ExecutorService pool = null;
     private byte[] Face_Byte = null;
     private  String Face_account = null;
@@ -34,6 +38,13 @@ public class login_model implements login_contract.login_ModelInterface{
 
 
     public login_model() {//初始化数据库和人脸识别服务以及线程
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                InsertSql(name,account);
+            }
+        }).start();
+
         new Thread() {
             @Override
             public void run(){
@@ -47,7 +58,7 @@ public class login_model implements login_contract.login_ModelInterface{
 
     @Override
     public void CheckOut_Count(String name,String account,final Login_Return login_return){
-        if (false/*数据库中有对应值*/){
+        if (return_value==false/*数据库中有对应值*/){
             login_return.BackWith_NameRepeat();
         }
         else{ //进入人脸识别界面
@@ -107,6 +118,23 @@ public class login_model implements login_contract.login_ModelInterface{
         }
         else{
             login_return.BackWith_FaceFail();
+        }
+    }
+    public void InsertSql(String name, String account){
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection connection= DriverManager.getConnection("jdbc:mysql://rm-m5e862um91w6uv5j2bo.mysql.rds.aliyuncs.com:3306/test","root","Hqu88888");
+            String sql="INSERT INTO test1 (name,num) Values(?,?)";
+            PreparedStatement st=(PreparedStatement)connection.prepareStatement(sql);
+            st.setString(1,name);
+            st.setString(2,account);
+            st.executeUpdate();
+            connection.close();
+            st.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            return_value=false;
         }
     }
 }
