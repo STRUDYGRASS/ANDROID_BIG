@@ -47,7 +47,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="返回"
-        android:id="@+id/record_return"/>
+        android:id="@+id/record_return"
+        android:onClick="Record_return"/>
 
 </LinearLayout>
 </LinearLayout>
