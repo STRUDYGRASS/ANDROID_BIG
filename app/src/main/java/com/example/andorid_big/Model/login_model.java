@@ -12,6 +12,9 @@ import com.example.andorid_big.Contract.login_contract;
 import com.example.andorid_big.Model.FaceBaiduApi.AuthService;
 import com.example.andorid_big.Model.FaceBaiduApi.FaceAdd;
 import com.example.andorid_big.Model.FaceBaiduApi.FaceSearch;
+import com.example.andorid_big.Model.SQL.SQL_Connection;
+import com.example.andorid_big.Model.SQL.SQL_Insert;
+import com.example.andorid_big.Model.SQL.SQL_Select;
 import com.example.andorid_big.bean.FaceAddReturn;
 import com.example.andorid_big.bean.FaceSearchReturn;
 import com.google.gson.Gson;
@@ -27,24 +30,26 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class login_model implements login_contract.login_ModelInterface{
-    private String AccessToken,name,account;
+    private String AccessToken,register_name,register_account;
     private boolean return_value=true;
     private ExecutorService pool = null;
     private byte[] Face_Byte = null;
-    private  String Face_account = null;
-    private boolean Thread_FaceAdd_Done = false,Thread_FaceSearch_Done = false;
+    private  String Face_account = null,Face_name = null;
+    private boolean Thread_FaceAdd_Done = false,Thread_FaceSearch_Done = false,Thread_insert_Done=false;
     private FaceAddReturn faceAddReturn = null;
     private FaceSearchReturn faceSearchReturn = null;
+
+    private Connection conn = null;
+    private int Insert_Return = 0;
 
 
     public login_model() {//初始化数据库和人脸识别服务以及线程
         new Thread(new Runnable() {
             @Override
             public void run() {
-                InsertSql(name,account);
+                conn = SQL_Connection.Connection();//连接数据库
             }
         }).start();
-
         new Thread() {
             @Override
             public void run(){
@@ -58,18 +63,39 @@ public class login_model implements login_contract.login_ModelInterface{
 
     @Override
     public void CheckOut_Count(String name,String account,final Login_Return login_return){
-        if (return_value==false/*数据库中有对应值*/){
+        register_name=name;
+        register_account=account;
+        pool.execute(SQL_Select);
+        while (!Thread_insert_Done);
+        Thread_insert_Done=false;
+        if (Insert_Return==201/*数据库中有对应值*/){
             login_return.BackWith_NameRepeat();
         }
         else{ //进入人脸识别界面
             login_return.Start_Camera_Log(); //执行操作放到mainactivity中
             Face_account = account;
+            Face_name = name;
 //            Uri photo_uri = Uri.parse((String) login_return.Start_Camera());
 //            System.out.println(photo_uri);
         }
 
 
     }
+
+    Thread SQL_insert=new Thread(){
+        @Override
+        public void run(){
+            Insert_Return= SQL_Insert.InsertSql(register_name,register_account);
+            Thread_insert_Done=true;
+        }
+    };
+
+    Thread SQL_Select=new Thread(){
+        @Override
+        public void run(){
+            //查询待写
+        }
+    };
 
     Thread thread_FaceAdd = new Thread(){
         @Override
@@ -120,21 +146,5 @@ public class login_model implements login_contract.login_ModelInterface{
             login_return.BackWith_FaceFail();
         }
     }
-    public void InsertSql(String name, String account){
-        try{
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection connection= DriverManager.getConnection("jdbc:mysql://rm-m5e862um91w6uv5j2bo.mysql.rds.aliyuncs.com:3306/test","root","Hqu88888");
-            String sql="INSERT INTO test1 (name,num) Values(?,?)";
-            PreparedStatement st=(PreparedStatement)connection.prepareStatement(sql);
-            st.setString(1,name);
-            st.setString(2,account);
-            st.executeUpdate();
-            connection.close();
-            st.close();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            return_value=false;
-        }
-    }
+
 }

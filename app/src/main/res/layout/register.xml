@@ -25,5 +25,5 @@
         android:layout_height="wrap_content"
         android:text="注册"
         android:layout_marginTop="300dp"
-        android:onClick="Register"/>
+        android:onClick="Register_log"/>
 </LinearLayout>
