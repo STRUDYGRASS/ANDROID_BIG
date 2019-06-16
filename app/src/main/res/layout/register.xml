@@ -11,6 +11,7 @@
         android:layout_height="50dp"
         android:hint="姓名"
         android:id="@+id/text_register_name"
+        android:inputType="textPersonName"
         />
 
     <EditText
@@ -18,7 +19,8 @@
         android:layout_height="50dp"
         android:hint="学号"
         android:id="@+id/text_register_account"
-        android:layout_marginTop="50dp" />
+        android:layout_marginTop="50dp"
+        android:inputType="number"/>
 
     <Button
         android:layout_width="300dp"
@@ -26,4 +28,11 @@
         android:text="注册"
         android:layout_marginTop="300dp"
         android:onClick="Register_log"/>
+
+    <Button
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="返回"
+        android:layout_marginTop="20dp"
+        android:onClick="Register_back"/>
 </LinearLayout>

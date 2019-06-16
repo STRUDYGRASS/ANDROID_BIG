@@ -11,7 +11,9 @@ public interface login_contract {
         void Checkin_Main();
 
         void Start_Camera_Log();
-        void FaceCheck(byte[] bt);
+        void FaceCheck(byte[] bt,int MARK);
+
+        void Start_Camera_Sign();
     }
 
     interface login_PresenterInterface{
@@ -24,6 +26,7 @@ public interface login_contract {
         void Register_Submit(String name, String account);
 
         void FaceCheck_Log(byte[] bt);
+        void FaceCheck_Sign(byte[] bt);
     }
 
     interface login_ModelInterface{
@@ -34,12 +37,18 @@ public interface login_contract {
             void BackWith_NameRepeat();
             void BackWith_FaceSuccess();
             void BackWith_FaceFail();
-            /**********还需要把回调界面放到model中******/
-            void Back_ChangetoMain();
             /******************尝试调用************/
             void Start_Camera_Log();
         }
+
+        interface Sign_Return{
+            void BackWith_Noface();
+            void BackWith_FaceSuccess();
+            void BackWith_FaceAlready();
+            void BackWith_FaceFail();
+        }
         /********************相机*******************/
         void FaceCheck_Log(byte[] bt,Login_Return login_return);
+        void FaceCheck_Sign(byte[] bt,Sign_Return sign_return);
     }
 }

@@ -26,15 +26,16 @@ import java.io.FileInputStream;
 import java.util.zip.Inflater;
 
 
-public class MainActivity extends BaseActivity<login_contract.login_ViewInterface, login_presenter> implements login_contract.login_ViewInterface{
+public class MainActivity extends BaseActivity<login_contract.login_ViewInterface, login_presenter> implements login_contract.login_ViewInterface {
 
-    EditText text_register_name,text_register_account;
+    EditText text_register_name, text_register_account;
     login_presenter mlogin_presenter;
 
     private boolean Camera_Mark = false;
     private Uri Photo_Uri = null;
-    private  Uri contentUri = null;
-    private int LOG_FACE_CODE = 1,SIGN_FACE_CODE = 2;
+    private Uri contentUri = null;
+    private int LOG_FACE_CODE = 1, SIGN_FACE_CODE = 2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,61 +51,62 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
         //指定注册页面的注册按钮，跳转到注册事件
     }
 
-    public void Register_log(View view) {
+    public void Register_log(View view) { //注册界面的注册按钮
         String str_name = text_register_name.getText().toString(), str_account = text_register_account.getText().toString();
-        if (str_account.length() >0 && str_name.length() > 0) {
+        if (str_account.length() > 0 && str_name.length() > 0) {
             mlogin_presenter.Register_Submit(str_name, str_account);
-        }
-        else{
+        } else {
             mlogin_presenter.getView().ShowDialogWith("必须输入姓名和学号！");
         }
     }
+    public void Register_back(View view){ //注册界面的返回按钮
+        mlogin_presenter.Main_Check();
+    }
 
-    public void Main_Register(View view){
+    public void Main_checkin(View view) { //切换到登陆界面
+        mlogin_presenter.Login_Sign_Check();
+    }
+
+    public void Main_Register(View view) { //切换到注册界面
         mlogin_presenter.Login_Register_Check();
     }
 
     @Override
-    protected login_presenter createPresenter(){
-        return new login_presenter((login_contract.login_ViewInterface)this);
+    protected login_presenter createPresenter() {
+        return new login_presenter((login_contract.login_ViewInterface) this);
     }
 
     @Override
-    public void ShowDialogWith(String str)
-    {
-        Toast.makeText(this, str,Toast.LENGTH_SHORT).show();
+    public void ShowDialogWith(String str) {
+        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void Checkin_Regester(){
+    public void Checkin_Regester() {
         setContentView(R.layout.register);
         text_register_name = findViewById(R.id.text_register_name);
         text_register_account = findViewById(R.id.text_register_account);
-
     }
 
     @Override
-    public void Checkin_Login(){
+    public void Checkin_Login() {//写初始化控件并实时更新的代码
         setContentView(R.layout.interface_signin);
 
     }
 
-    public void Interface_return(View view){
-        finish();
+
+    @Override
+    public void Checkin_Login_Log() {//写初始化控件并实时更新的代码
+        setContentView(R.layout.record);
     }
 
     @Override
-    public void Checkin_Login_Log(){
-        setContentView(R.layout.activity_main);//layout待写
-    }
-
-    @Override
-    public void Checkin_Main(){
+    public void Checkin_Main() {
         setContentView(R.layout.main_interface);
     }
 
     @Override
-    public void Start_Camera_Log(){ //相机能力有限，调用api了
+    public void Start_Camera_Log() { //相机能力有限，调用api了
 //        // 记录文件保存位置
 //         String mFilePath;
 //         FileInputStream is = null;
@@ -120,7 +122,7 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
 //        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 //        intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 楼主少了这个。没有这个finsh 无法返回的
-        startActivityForResult(intent,LOG_FACE_CODE);
+        startActivityForResult(intent, LOG_FACE_CODE);
         //while (!Camera_Mark); //等待相机回调
 //        if (Photo_Uri != null) {
 //            return Photo_Uri.toString();
@@ -130,8 +132,39 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
     }
 
     @Override
-    public void FaceCheck(byte[] bt){
-        mlogin_presenter.FaceCheck_Log(bt);
+    public void Start_Camera_Sign() { //相机能力有限，调用api了
+//        // 记录文件保存位置
+//         String mFilePath;
+//         FileInputStream is = null;
+//
+//        // 获取SD卡路径
+//        mFilePath = Environment.getExternalStorageDirectory().getPath();
+//        // 文件名
+//        mFilePath = mFilePath + "/" + "photo.png";
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); //指定拍照
+//        Uri uri = Uri.fromFile(new File(mFilePath));
+//        contentUri = FileProvider.getUriForFile(this, "com.example.andorid_big.provider", new File(mFilePath));
+//        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 楼主少了这个。没有这个finsh 无法返回的
+        startActivityForResult(intent, SIGN_FACE_CODE);
+        //while (!Camera_Mark); //等待相机回调
+//        if (Photo_Uri != null) {
+//            return Photo_Uri.toString();
+//        }
+//        else
+
+    }
+
+    @Override
+    public void FaceCheck(byte[] bt,int MARK) {
+        if (MARK == LOG_FACE_CODE) {
+            mlogin_presenter.FaceCheck_Log(bt);
+        }
+        else if (MARK == SIGN_FACE_CODE){
+            mlogin_presenter.FaceCheck_Sign(bt);
+        }
     }
 
     @Override
@@ -140,16 +173,25 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             // 判断返回值是否正确
-            if (requestCode == LOG_FACE_CODE ) {
+            if (requestCode == LOG_FACE_CODE) {
                 if (data.getExtras() != null) {
                     Bundle extras = data.getExtras();
-                    Bitmap imageBitmap = (Bitmap)extras.get("data") ;
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     imageBitmap.compress(Bitmap.CompressFormat.JPEG, 80, bos);
                     byte[] bt = bos.toByteArray();
-                    FaceCheck(bt);
+                    FaceCheck(bt,LOG_FACE_CODE);
                 }
 
+            } else if (requestCode == SIGN_FACE_CODE) {
+                if (data.getExtras() != null) {
+                    Bundle extras = data.getExtras();
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 80, bos);
+                    byte[] bt = bos.toByteArray();
+                    FaceCheck(bt,SIGN_FACE_CODE);
+                }
             }
         }
     }

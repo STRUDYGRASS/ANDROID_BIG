@@ -8,6 +8,7 @@ import com.example.andorid_big.Model.login_model;
 
 public class login_presenter extends BasePresenter<login_contract.login_ViewInterface> implements login_contract.login_PresenterInterface{
     login_model loginModel = null;
+    private int LOG_FACE_CODE = 1, SIGN_FACE_CODE = 2;
     login_contract.login_ModelInterface.Login_Return login_return = new login_contract.login_ModelInterface.Login_Return() {
         @Override
         public void BackWith_FaceRepeat(String name) {
@@ -21,6 +22,7 @@ public class login_presenter extends BasePresenter<login_contract.login_ViewInte
 
         @Override
         public void BackWith_FaceSuccess() {
+            getView().Checkin_Main();
             getView().ShowDialogWith("人脸注册成功！");
         }
         @Override
@@ -31,9 +33,28 @@ public class login_presenter extends BasePresenter<login_contract.login_ViewInte
         public void Start_Camera_Log(){
              getView().Start_Camera_Log();
         }
+    };
+    login_contract.login_ModelInterface.Sign_Return sign_return = new login_contract.login_ModelInterface.Sign_Return() {
         @Override
-        public void Back_ChangetoMain(){
-            getView().Checkin_Main();
+        public void BackWith_Noface() {
+            getView().ShowDialogWith("无该人脸！");
+        }
+
+        @Override
+        public void BackWith_FaceSuccess() {
+            getView().Checkin_Login();
+            getView().ShowDialogWith("签到成功！");
+        }
+
+        @Override
+        public void BackWith_FaceAlready() {
+            getView().Checkin_Login();
+            getView().ShowDialogWith("您已签到！");
+        }
+
+        @Override
+        public void BackWith_FaceFail(){
+            getView().ShowDialogWith("人脸识别失败！");
         }
     };
 
@@ -70,6 +91,11 @@ public class login_presenter extends BasePresenter<login_contract.login_ViewInte
     @Override
     public void FaceCheck_Log(byte[] bt){
         loginModel.FaceCheck_Log(bt,login_return);
+    }
+
+    @Override
+    public void FaceCheck_Sign(byte[] bt){
+        loginModel.FaceCheck_Sign(bt,sign_return);
     }
 
 }

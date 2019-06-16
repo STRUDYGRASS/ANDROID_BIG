@@ -138,12 +138,37 @@ public class login_model implements login_contract.login_ModelInterface{
 
                 } else if (faceAddReturn.getError_code() == 222202) {
                     login_return.BackWith_FaceFail();
-                    login_return.Back_ChangetoMain();
                 }
             }
         }
         else{
             login_return.BackWith_FaceFail();
+        }
+    }
+
+    @Override
+    public void FaceCheck_Sign(byte[] bt,final Sign_Return sign_return){
+        Face_Byte = bt;
+        pool.execute(thread_FaceSearch);
+        while (!Thread_FaceSearch_Done) ; //等待线程结束
+        Thread_FaceSearch_Done = false;
+        //判断识别指数是否高于95
+        if (faceSearchReturn.getError_code() == 0) {
+            if (faceSearchReturn.getResult().getUser_list().get(0).getScore() > 95) {//判断是相同照片
+                if (true) {//判断此人是否已经注册
+                    sign_return.BackWith_FaceAlready();
+                }
+                else{
+                    //将此人加入已签到列表
+                    sign_return.BackWith_FaceSuccess();
+                }
+            }
+            else{
+                sign_return.BackWith_Noface();
+            }
+        }
+        else{
+            sign_return.BackWith_FaceFail();
         }
     }
 
