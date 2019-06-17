@@ -73,10 +73,10 @@ public class login_presenter extends BasePresenter<login_contract.login_ViewInte
         getView().Checkin_Regester();
     }
 
-    @Override
-    public void Login_Log_Check(){
-        getView().Checkin_Login_Log();
-    }
+//    @Override
+//    public void Login_Log_Check(){
+//        getView().Checkin_Login_Log();
+//    }
 
     @Override
     public void Main_Check(){

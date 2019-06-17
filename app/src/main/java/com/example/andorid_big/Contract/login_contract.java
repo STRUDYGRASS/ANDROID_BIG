@@ -7,7 +7,6 @@ public interface login_contract {
         void ShowDialogWith(String str);
         void Checkin_Regester();
         void Checkin_Login();
-        void Checkin_Login_Log();
         void Checkin_Main();
 
         void Start_Camera_Log();
@@ -20,7 +19,6 @@ public interface login_contract {
         /****************************布局切换**************************/
         void Login_Sign_Check();
         void Login_Register_Check();
-        void Login_Log_Check();
         void Main_Check();
         /***************************函数调用*****************************/
         void Register_Submit(String name, String account);
