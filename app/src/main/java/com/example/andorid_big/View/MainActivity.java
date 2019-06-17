@@ -95,10 +95,6 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
     }
 
 
-    @Override
-    public void Checkin_Login_Log() {//写初始化控件并实时更新的代码
-        setContentView(R.layout.record);
-    }
 
     @Override
     public void Checkin_Main() {
