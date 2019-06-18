@@ -25,13 +25,14 @@ import com.alibaba.fastjson.JSONObject;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class login_model implements login_contract.login_ModelInterface{
     private String AccessToken,register_name,register_account;
-    private boolean return_value=true,sql_insert = false,person_in = false;
+    private boolean return_value=true,own_sql_insert = false,person_in = false;
     private ExecutorService pool = null;
     private byte[] Face_Byte = null;
     private  String Face_account = null,Face_name = null;
@@ -39,7 +40,7 @@ public class login_model implements login_contract.login_ModelInterface{
     private FaceAddReturn faceAddReturn = null;
     private FaceSearchReturn faceSearchReturn = null;
 
-    private int Insert_Return = 0,sql_select=0;
+    private int Insert_Return = 0,own_sql_select=0;
 
 
     public login_model() {//初始化数据库和人脸识别服务以及线程
@@ -78,7 +79,7 @@ public class login_model implements login_contract.login_ModelInterface{
     Thread thread_SQL_insert=new Thread(){
         @Override
         public void run(){
-            if (sql_insert)
+            if (own_sql_insert)
             {
                 Insert_Return = SQL_Insert.InsertSql2(faceSearchReturn.getResult().getUser_list().get(0).getUser_id());
                 Thread_insert_Done = true;
@@ -93,15 +94,37 @@ public class login_model implements login_contract.login_ModelInterface{
     Thread thread_SQL_Select=new Thread(){
         @Override
         public void run(){
-            if (sql_select==1){
+            if (own_sql_select==1){
                 //写listview的获取
             }
-            else if(sql_select==2){
-                person_in = SQL_Select.Select(faceSearchReturn.getResult().getUser_list().get(0).getUser_id());
+            else if(own_sql_select==2){
+                ResultSet rs = SQL_Select.Select_Match(faceSearchReturn.getResult().getUser_list().get(0).getUser_id());
+                try {
+                    if (rs == null || !rs.next()) {
+                        person_in = false;
+                    }
+                    else {
+                        person_in = true;
+                    }
+                }
+                catch (SQLException e){
+                    System.err.println("rs error");
+                }
                 Thread_SQL_Select_Done = true;
             }
-            else if(sql_select==3){
-                person_in = SQL_Select.Select_Sign(faceSearchReturn.getResult().getUser_list().get(0).getUser_id());
+            else if(own_sql_select==3){
+                ResultSet rs = SQL_Select.Select_Sign(faceSearchReturn.getResult().getUser_list().get(0).getUser_id());
+                try {
+                    if (rs == null || !rs.next()) {
+                        person_in = false;
+                    }
+                    else {
+                        person_in = true;
+                    }
+                }
+                catch (SQLException e){
+                    System.err.println("rs error");
+                }
                 Thread_SQL_Select_Done = true;
             }
         }
@@ -143,7 +166,7 @@ public class login_model implements login_contract.login_ModelInterface{
                 while (!Thread_FaceAdd_Done) ; //等待线程结束
                 Thread_FaceAdd_Done = false;
                 if (faceAddReturn.getError_code() == 0) {
-                    sql_insert=false;
+                    own_sql_insert=false;
                     pool.execute(thread_SQL_insert);
                     while (!Thread_insert_Done);
                     Thread_insert_Done=false;
@@ -172,7 +195,7 @@ public class login_model implements login_contract.login_ModelInterface{
         //判断识别指数是否高于95
         if (faceSearchReturn.getError_code() == 0) {
             if (faceSearchReturn.getResult().getUser_list().get(0).getScore() > 95) {//判断是相同照片
-                sql_select = 3;
+                own_sql_select = 3;
                 pool.execute(thread_SQL_Select);
                 while (!Thread_SQL_Select_Done);
                 Thread_SQL_Select_Done = false;
@@ -180,7 +203,7 @@ public class login_model implements login_contract.login_ModelInterface{
                     sign_return.BackWith_FaceAlready();
                 }
                 else{
-                    sql_insert=true;
+                    own_sql_insert=true;
                     pool.execute(thread_SQL_insert);
                     while (!Thread_insert_Done);
                     Thread_insert_Done=false;
