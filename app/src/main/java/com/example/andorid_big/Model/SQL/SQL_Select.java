@@ -35,7 +35,7 @@ public class SQL_Select {
     public static boolean Select_Sign(String key){
         Connection conn=SQL_Connection.Connection();
         try{
-            String sql="SELECT * FROM test2 WHERE name = ?";
+            String sql="SELECT * FROM test2 WHERE name = '?'";
             PreparedStatement stmt=(PreparedStatement)conn.prepareStatement(sql);
             stmt.setString(1,key);
             ResultSet rs=stmt.executeQuery();

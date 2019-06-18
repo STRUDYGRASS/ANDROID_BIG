@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.baidu.ai.aip.utils.Base64Util;
 import com.example.andorid_big.Contract.login_contract;
@@ -156,6 +158,7 @@ public class login_model implements login_contract.login_ModelInterface{
                     while (!Thread_insert_Done);
                     Thread_insert_Done=false;
                     if(Insert_Return==201){
+
                         //注册失败
                     }
                     //数据库中加入该用户
@@ -192,7 +195,8 @@ public class login_model implements login_contract.login_ModelInterface{
                     pool.execute(thread_SQL_insert);
                     while (!Thread_insert_Done);
                     Thread_insert_Done=false;
-                    if(Insert_Return==203){
+                    if(Insert_Return==202){
+//                        Toast.makeText(this, "签到失败", Toast.LENGTH_SHORT).show();
                         //签到失败
                     }
                     //将此人加入已签到列表
@@ -207,5 +211,7 @@ public class login_model implements login_contract.login_ModelInterface{
             sign_return.BackWith_FaceFail();
         }
     }
+
+
 
 }
