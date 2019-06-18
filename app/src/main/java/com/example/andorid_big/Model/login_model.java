@@ -39,24 +39,16 @@ public class login_model implements login_contract.login_ModelInterface{
     private FaceAddReturn faceAddReturn = null;
     private FaceSearchReturn faceSearchReturn = null;
 
-    private Connection conn = null;
     private int Insert_Return = 0,sql_select=0;
 
 
     public login_model() {//初始化数据库和人脸识别服务以及线程
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                conn = SQL_Connection.Connection();//连接数据库
-            }
-        }).start();
         new Thread() {
             @Override
             public void run(){
                 AccessToken=AuthService.getAuth();//每次启动获取一次token
             }
         }.start();
-
         pool = Executors.newFixedThreadPool(2);
         //创建实现了Runnable接口对象，Thread对象当然也实现了Runnable接口
     }
@@ -68,7 +60,7 @@ public class login_model implements login_contract.login_ModelInterface{
         pool.execute(thread_SQL_Select);
         while (!Thread_SQL_Select_Done);
         Thread_SQL_Select_Done=false;
-        if (person_in==true/*数据库中有对应值*/){
+        if (person_in/*数据库中有对应值*/){
             login_return.BackWith_NameRepeat();
         }
         else{ //进入人脸识别界面
@@ -156,7 +148,7 @@ public class login_model implements login_contract.login_ModelInterface{
                     while (!Thread_insert_Done);
                     Thread_insert_Done=false;
                     if(Insert_Return==201){
-                        //注册失败
+                        login_return.BackWith_FaceFail();//注册失败
                     }
                     //数据库中加入该用户
                     login_return.BackWith_FaceSuccess();
