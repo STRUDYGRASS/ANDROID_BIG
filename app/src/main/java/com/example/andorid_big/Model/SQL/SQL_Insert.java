@@ -8,8 +8,8 @@ public  class SQL_Insert {
     public static int InsertSql1(String name, String account) {
         Connection conn = SQL_Connection.Connection();
         try {
-            String sql = "INSERT INTO test1 (name,num) Values(?,?)";
-            PreparedStatement st = (PreparedStatement) conn.prepareStatement(sql);
+            String insert_sql = "INSERT INTO test1 (name,num) Values(?,?)";
+            PreparedStatement st = (PreparedStatement) conn.prepareStatement(insert_sql);
             st.setString(1, name);
             st.setString(2, account);
             st.executeUpdate();
@@ -23,8 +23,8 @@ public  class SQL_Insert {
     public static int InsertSql2(String name) {
         Connection conn = SQL_Connection.Connection();
         try {
-            String sql = "INSERT INTO test2 (name,time) Values(?,NOW())";
-            PreparedStatement st = (PreparedStatement) conn.prepareStatement(sql);
+            String insert_sql = "INSERT INTO test2 (name,time) Values(?,NOW())";
+            PreparedStatement st = (PreparedStatement) conn.prepareStatement(insert_sql);
             st.setString(1, name);
             st.executeUpdate();
             st.close();

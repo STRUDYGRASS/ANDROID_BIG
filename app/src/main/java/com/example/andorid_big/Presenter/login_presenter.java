@@ -56,6 +56,10 @@ public class login_presenter extends BasePresenter<login_contract.login_ViewInte
         public void BackWith_FaceFail(){
             getView().ShowDialogWith("人脸识别失败！");
         }
+
+        public void BackWith_SignFail(){
+            getView().ShowDialogWith("签到失败！");
+        }
     };
 
     public login_presenter(login_contract.login_ViewInterface v){
@@ -72,11 +76,6 @@ public class login_presenter extends BasePresenter<login_contract.login_ViewInte
     public void Login_Register_Check(){
         getView().Checkin_Regester();
     }
-
-//    @Override
-//    public void Login_Log_Check(){
-//        getView().Checkin_Login_Log();
-//    }
 
     @Override
     public void Main_Check(){

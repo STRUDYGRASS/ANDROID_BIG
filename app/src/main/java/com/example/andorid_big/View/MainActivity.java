@@ -23,6 +23,8 @@ import com.example.andorid_big.Contract.login_contract;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.Inflater;
 
 
@@ -91,7 +93,7 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
     @Override
     public void Checkin_Login() {//写初始化控件并实时更新的代码
         setContentView(R.layout.interface_signin);
-
+        Start_Camera_Sign();
     }
 
 
@@ -152,6 +154,7 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
 //        else
 
     }
+
 
     @Override
     public void FaceCheck(byte[] bt,int MARK) {

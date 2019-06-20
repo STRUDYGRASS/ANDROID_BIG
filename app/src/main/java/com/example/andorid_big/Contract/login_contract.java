@@ -44,6 +44,7 @@ public interface login_contract {
             void BackWith_FaceSuccess();
             void BackWith_FaceAlready();
             void BackWith_FaceFail();
+            void BackWith_SignFail();
         }
         /********************相机*******************/
         void FaceCheck_Log(byte[] bt,Login_Return login_return);
