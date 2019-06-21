@@ -1,10 +1,12 @@
 package com.example.andorid_big.View;
 
+import android.Manifest;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -14,8 +16,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
+import androidx.core.content.PermissionChecker;
 
 import com.example.andorid_big.Base.BaseActivity;
+import com.example.andorid_big.BuildConfig;
 import com.example.andorid_big.Model.Sign_List;
 import com.example.andorid_big.Presenter.login_presenter;
 import com.example.andorid_big.R;
@@ -43,6 +47,20 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= 23 && (PermissionChecker
+                .checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                PermissionChecker.PERMISSION_GRANTED || PermissionChecker
+                .checkSelfPermission(this, Manifest.permission.CAMERA) !=
+                PermissionChecker.PERMISSION_GRANTED) ){
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA}, 0);
+        }
+
+        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= 23 && PermissionChecker
+                .checkSelfPermission(this, Manifest.permission.CAMERA) !=
+                PermissionChecker.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, 0);
+        }
         setContentView(R.layout.main_interface);
 
         mlogin_presenter = getPresenter();
@@ -62,6 +80,9 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
         } else {
             mlogin_presenter.getView().ShowDialogWith("必须输入姓名和学号！");
         }
+    }
+    public void Interface_return(View view){
+        mlogin_presenter.Main_Check();
     }
     public void Register_back(View view){ //注册界面的返回按钮
         mlogin_presenter.Main_Check();
@@ -93,10 +114,11 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
     }
 
     @Override
-    public void Checkin_Login() {//写初始化控件并实时更新的代码
+    public void Checkin_Login() {
         setContentView(R.layout.interface_signin);
         Start_Camera_Sign();
         sign_lists = mlogin_presenter.ListInit();
+        //还未写setadapter到具体view
     }
 
 
