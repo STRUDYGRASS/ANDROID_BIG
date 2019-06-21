@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.jar.Attributes;
 
 public class login_model implements login_contract.login_ModelInterface{
     private String AccessToken,register_name,register_account;
@@ -44,9 +45,11 @@ public class login_model implements login_contract.login_ModelInterface{
     private FaceSearchReturn faceSearchReturn = null;
     private List<Sign_List> namelist=null;
     private int Insert_Return = 0,own_sql_select=0;
+    private int SQL_LIST_CODE = 1,SQL_SINGLE_SEARCH_CODE =2,SQL_SIGN_SEARCH_CODE = 3;
 
 
     public login_model() {//初始化数据库和人脸识别服务以及线程
+
         new Thread() {
             @Override
             public void run(){
@@ -60,7 +63,7 @@ public class login_model implements login_contract.login_ModelInterface{
     @Override
     public  List<Sign_List> List_Init(){
         namelist = new ArrayList<Sign_List>();
-        own_sql_select = 1;
+        own_sql_select = SQL_LIST_CODE;
         pool.execute(thread_SQL_Select);
         while (!Thread_SQL_Select_Done);
         return namelist;
@@ -70,6 +73,7 @@ public class login_model implements login_contract.login_ModelInterface{
     public void CheckOut_Count(String name,String account,final Login_Return login_return){
         register_name=name;
         register_account=account;
+        own_sql_select = SQL_SINGLE_SEARCH_CODE;
         pool.execute(thread_SQL_Select);
         while (!Thread_SQL_Select_Done);
         Thread_SQL_Select_Done=false;
@@ -106,27 +110,16 @@ public class login_model implements login_contract.login_ModelInterface{
     Thread thread_SQL_Select=new Thread(){
         @Override
         public void run(){
-            if (own_sql_select==1){
+            if (own_sql_select==SQL_LIST_CODE){
                 namelist = SQL_Select.Select_All(namelist);
                 Thread_SQL_Select_Done = true;
             }
 
-            else if(own_sql_select==2){
-                ResultSet rs = SQL_Select.Select_Match(faceSearchReturn.getResult().getUser_list().get(0).getUser_id());
-                try {
-                    if (rs == null || !rs.next()) {
-                        person_in = false;
-                    }
-                    else {
-                        person_in = true;
-                    }
-                }
-                catch (SQLException e){
-                    System.err.println("rs error");
-                }
+            else if(own_sql_select==SQL_SINGLE_SEARCH_CODE){
+//                person_in = SQL_Select.Select_Match(register_account);
                 Thread_SQL_Select_Done = true;
             }
-            else if(own_sql_select==3){
+            else if(own_sql_select==SQL_SIGN_SEARCH_CODE){
                 ResultSet rs = SQL_Select.Select_Sign(faceSearchReturn.getResult().getUser_list().get(0).getUser_id());
                 try {
                     if (rs == null || !rs.next()) {
@@ -209,7 +202,7 @@ public class login_model implements login_contract.login_ModelInterface{
         //判断识别指数是否高于95
         if (faceSearchReturn.getError_code() == 0) {
             if (faceSearchReturn.getResult().getUser_list().get(0).getScore() > 95) {//判断是相同照片
-                own_sql_select = 3;
+                own_sql_select = SQL_SIGN_SEARCH_CODE;
                 pool.execute(thread_SQL_Select);
                 while (!Thread_SQL_Select_Done);
                 Thread_SQL_Select_Done = false;

@@ -32,20 +32,30 @@ public class SQL_Select {
         }
         return namelist;
     }
-    public static ResultSet Select_Match(String key){
+    public static Boolean Select_Match(String key){
         Connection conn=SQL_Connection.Connection();
         boolean Mark = false;
         try{
             String sql_select="SELECT * FROM test1 WHERE num = ?";
             PreparedStatement stmt=(PreparedStatement)conn.prepareStatement(sql_select);
-            stmt.setString(1,key);
-            ResultSet rs=stmt.executeQuery();
-            stmt.close();
-            return rs;
+//            stmt.setString(1,key);
+//            ResultSet rs=stmt.executeQuery();
+//            stmt.close();
+//            if (rs == null || !rs.next()) {
+//                Mark =  false;
+//            }
+//            else {
+//                Mark = true;
+//            }
+//            if (rs == null){
+//                System.err.println("11111111111111111111111111111111111");
+//            }
+//            rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+
+        return Mark;
     }
     public static ResultSet Select_Sign(String key){
         Connection conn=SQL_Connection.Connection();
