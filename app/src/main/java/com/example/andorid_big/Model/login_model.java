@@ -35,6 +35,8 @@ import java.util.concurrent.Executors;
 import java.util.jar.Attributes;
 
 public class login_model implements login_contract.login_ModelInterface{
+    public static List<Sign_List> namelist=new ArrayList<Sign_List>();
+
     private String AccessToken,register_name,register_account;
     private boolean return_value=true,own_sql_insert = false,person_in = false;
     private ExecutorService pool = null;
@@ -43,7 +45,8 @@ public class login_model implements login_contract.login_ModelInterface{
     private boolean Thread_FaceAdd_Done = false,Thread_FaceSearch_Done = false,Thread_insert_Done=false,Thread_SQL_Select_Done = false;
     private FaceAddReturn faceAddReturn = null;
     private FaceSearchReturn faceSearchReturn = null;
-    private List<Sign_List> namelist=null;
+
+
     private int Insert_Return = 0,own_sql_select=0;
     private int SQL_LIST_CODE = 1,SQL_SINGLE_SEARCH_CODE =2,SQL_SIGN_SEARCH_CODE = 3;
 
@@ -111,27 +114,21 @@ public class login_model implements login_contract.login_ModelInterface{
         @Override
         public void run(){
             if (own_sql_select==SQL_LIST_CODE){
-                namelist = SQL_Select.Select_All(namelist);
+                SQL_Select.Select_All();
                 Thread_SQL_Select_Done = true;
             }
 
             else if(own_sql_select==SQL_SINGLE_SEARCH_CODE){
-//                person_in = SQL_Select.Select_Match(register_account);
-                Thread_SQL_Select_Done = true;
-            }
+                SQL_Select.Select_Match(register_account);
+                            person_in = !namelist.isEmpty();
+                            namelist.clear();
+                             Thread_SQL_Select_Done = true;
+                }
+
             else if(own_sql_select==SQL_SIGN_SEARCH_CODE){
-                ResultSet rs = SQL_Select.Select_Sign(faceSearchReturn.getResult().getUser_list().get(0).getUser_id());
-                try {
-                    if (rs == null || !rs.next()) {
-                        person_in = false;
-                    }
-                    else {
-                        person_in = true;
-                    }
-                }
-                catch (SQLException e){
-                    System.err.println("rs error");
-                }
+                SQL_Select.Select_Sign(faceSearchReturn.getResult().getUser_list().get(0).getUser_id());
+                person_in = !namelist.isEmpty();
+                namelist.clear();
                 Thread_SQL_Select_Done = true;
             }
         }
