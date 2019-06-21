@@ -2,6 +2,10 @@ package com.example.andorid_big.Contract;
 
 import android.net.Uri;
 
+import com.example.andorid_big.Model.Sign_List;
+
+import java.util.List;
+
 public interface login_contract {
     interface login_ViewInterface{
         void ShowDialogWith(String str);
@@ -25,6 +29,8 @@ public interface login_contract {
 
         void FaceCheck_Log(byte[] bt);
         void FaceCheck_Sign(byte[] bt);
+
+        List<Sign_List> ListInit();
     }
 
     interface login_ModelInterface{
@@ -49,5 +55,7 @@ public interface login_contract {
         /********************相机*******************/
         void FaceCheck_Log(byte[] bt,Login_Return login_return);
         void FaceCheck_Sign(byte[] bt,Sign_Return sign_return);
+
+        List<Sign_List> List_Init();
     }
 }

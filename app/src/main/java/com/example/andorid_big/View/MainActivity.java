@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.core.content.FileProvider;
 
 import com.example.andorid_big.Base.BaseActivity;
+import com.example.andorid_big.Model.Sign_List;
 import com.example.andorid_big.Presenter.login_presenter;
 import com.example.andorid_big.R;
 import com.example.andorid_big.Contract.login_contract;
@@ -37,6 +38,7 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
     private Uri Photo_Uri = null;
     private Uri contentUri = null;
     private int LOG_FACE_CODE = 1, SIGN_FACE_CODE = 2;
+    private List<Sign_List> sign_lists = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +96,7 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
     public void Checkin_Login() {//写初始化控件并实时更新的代码
         setContentView(R.layout.interface_signin);
         Start_Camera_Sign();
+        sign_lists = mlogin_presenter.ListInit();
     }
 
 

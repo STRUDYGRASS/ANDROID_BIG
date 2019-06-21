@@ -42,8 +42,7 @@ public class login_model implements login_contract.login_ModelInterface{
     private boolean Thread_FaceAdd_Done = false,Thread_FaceSearch_Done = false,Thread_insert_Done=false,Thread_SQL_Select_Done = false;
     private FaceAddReturn faceAddReturn = null;
     private FaceSearchReturn faceSearchReturn = null;
-    private List<String> namelist=new ArrayList<String>();
-    private String[] nameArray;
+    private List<Sign_List> namelist=null;
     private int Insert_Return = 0,own_sql_select=0;
 
 
@@ -56,6 +55,15 @@ public class login_model implements login_contract.login_ModelInterface{
         }.start();
         pool = Executors.newFixedThreadPool(2);
         //创建实现了Runnable接口对象，Thread对象当然也实现了Runnable接口
+    }
+
+    @Override
+    public  List<Sign_List> List_Init(){
+        namelist = new ArrayList<Sign_List>();
+        own_sql_select = 1;
+        pool.execute(thread_SQL_Select);
+        while (!Thread_SQL_Select_Done);
+        return namelist;
     }
 
     @Override
@@ -99,8 +107,8 @@ public class login_model implements login_contract.login_ModelInterface{
         @Override
         public void run(){
             if (own_sql_select==1){
-                SQL_Select.Select_All((ArrayList) namelist,nameArray);
-                //写listview的获取
+                namelist = SQL_Select.Select_All(namelist);
+                Thread_SQL_Select_Done = true;
             }
 
             else if(own_sql_select==2){
