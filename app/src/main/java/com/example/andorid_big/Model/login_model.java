@@ -69,6 +69,9 @@ public class login_model implements login_contract.login_ModelInterface{
         own_sql_select = SQL_LIST_CODE;
         pool.execute(thread_SQL_Select);
         while (!Thread_SQL_Select_Done);
+//        new Thread(thread_SQL_Select).start();
+//        while (!Thread_SQL_Select_Done);
+        Thread_SQL_Select_Done = false;
         return namelist;
     }
 
@@ -87,9 +90,7 @@ public class login_model implements login_contract.login_ModelInterface{
             login_return.Start_Camera_Log(); //执行操作放到mainactivity中
             Face_account = account;
             Face_name = name;
-            pool.execute(thread_SQL_insert);
-            while (!Thread_insert_Done);
-            Thread_insert_Done=false;
+
 //            Uri photo_uri = Uri.parse((String) login_return.Start_Camera());
 //            System.out.println(photo_uri);
         }

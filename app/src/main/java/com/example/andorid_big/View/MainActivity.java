@@ -1,6 +1,7 @@
 package com.example.andorid_big.View;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -45,6 +46,7 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
     private Uri contentUri = null;
     private int LOG_FACE_CODE = 1, SIGN_FACE_CODE = 2;
     private List<Sign_List> sign_lists = null;
+    private Context context = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,7 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
             requestPermissions(new String[]{Manifest.permission.CAMERA}, 0);
         }
         setContentView(R.layout.main_interface);
+        context = this;
 
         mlogin_presenter = getPresenter();
 
@@ -76,6 +79,8 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
     }
 
     public void Register_log(View view) { //注册界面的注册按钮
+        text_register_name = findViewById(R.id.text_register_name);
+        text_register_account = findViewById(R.id.text_register_account);
         String str_name = text_register_name.getText().toString(), str_account = text_register_account.getText().toString();
         if (str_account.length() > 0 && str_name.length() > 0) {
             mlogin_presenter.Register_Submit(str_name, str_account);
@@ -88,7 +93,7 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
         ListView list = findViewById(R.id.list_person);
         sign_lists = mlogin_presenter.ListInit();
 
-        ListAdapter adapter = new ListAdapter(this, R.layout.list_play, sign_lists);
+        ListAdapter adapter = new ListAdapter(context, R.layout.list_play, sign_lists);
         list.setAdapter(adapter);
     }
 
@@ -115,25 +120,27 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
 
     @Override
     public void ShowDialogWith(String str) {
-        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void Checkin_Regester() {
         setContentView(R.layout.register);
-        text_register_name = findViewById(R.id.text_register_name);
-        text_register_account = findViewById(R.id.text_register_account);
+        context = this;
+
     }
 
     @Override
     public void Checkin_Login() {
         setContentView(R.layout.main_interface);
+        context = this;
         Start_Camera_Sign();
     }
 
     @Override
     public void Checkin_Log(){
         setContentView(R.layout.interface_signin);
+        context = this;
     }
 
 
@@ -141,6 +148,7 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
     @Override
     public void Checkin_Main() {
         setContentView(R.layout.main_interface);
+        context = this;
     }
 
     @Override
