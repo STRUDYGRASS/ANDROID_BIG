@@ -39,10 +39,10 @@ public class login_model implements login_contract.login_ModelInterface{
 
     private String AccessToken,register_name,register_account;
     private boolean return_value=true,own_sql_insert = false,person_in = false;
-    private ExecutorService pool = null;
+//    private ExecutorService pool = null;
     private byte[] Face_Byte = null;
     private  String Face_account = null,Face_name = null;
-    private boolean Thread_FaceAdd_Done = false,Thread_FaceSearch_Done = false,Thread_insert_Done=false,Thread_SQL_Select_Done = false;
+    private boolean Thread_FaceAdd_Do = true,Thread_FaceSearch_Do = true,Thread_insert_Do=true,Thread_SQL_Select_Do = true;
     private FaceAddReturn faceAddReturn = null;
     private FaceSearchReturn faceSearchReturn = null;
 
@@ -59,19 +59,88 @@ public class login_model implements login_contract.login_ModelInterface{
                 AccessToken=AuthService.getAuth();//每次启动获取一次token
             }
         }.start();
-        pool = Executors.newFixedThreadPool(2);
-        //创建实现了Runnable接口对象，Thread对象当然也实现了Runnable接口
+
+
+        new Thread(){
+            @Override
+            public void run(){
+                while (true) {
+                    if (!Thread_insert_Do) {
+                        if (own_sql_insert) {
+                            Insert_Return = SQL_Insert.InsertSql2(faceSearchReturn.getResult().getUser_list().get(0).getUser_id());
+                            Thread_insert_Do = true;
+                        } else {
+                            Insert_Return = SQL_Insert.InsertSql1(register_name, register_account);
+                            Thread_insert_Do = true;
+                        }
+                    }
+                }
+            }
+        }.start();
+
+        new Thread(){
+            @Override
+            public void run(){
+                while (true) {
+                    if (!Thread_SQL_Select_Do){
+                        namelist.clear();
+                        if (own_sql_select==SQL_LIST_CODE){
+                            SQL_Select.Select_All();
+                            Thread_SQL_Select_Do = true;
+                        }
+
+                        else if(own_sql_select==SQL_SINGLE_SEARCH_CODE){
+                            SQL_Select.Select_Match(register_account);
+                            person_in = !namelist.isEmpty();
+                            Thread_SQL_Select_Do = true;
+                        }
+
+                        else if(own_sql_select==SQL_SIGN_SEARCH_CODE){
+                            SQL_Select.Select_Sign(faceSearchReturn.getResult().getUser_list().get(0).getUser_id());
+                            person_in = !namelist.isEmpty();
+                            Thread_SQL_Select_Do = true;
+                        }
+                    }
+                }
+            }
+        }.start();
+
+        new Thread(){
+            @Override
+            public void run(){
+                while (true){
+                    if (!Thread_FaceAdd_Do){
+                        JSON json = JSON.parseObject(FaceAdd.add(Face_account,Base64Util.encode(Face_Byte),AccessToken));
+                        faceAddReturn = JSONObject.toJavaObject(json, FaceAddReturn.class);
+                        Thread_FaceAdd_Do = true;
+                    }
+                }
+            }
+        }.start();
+
+        new Thread(){
+            @Override
+            public void run(){
+                while (true){
+                    if (!Thread_FaceSearch_Do){
+                        JSON json = JSON.parseObject(FaceSearch.search(Base64Util.encode(Face_Byte),AccessToken));
+                        faceSearchReturn = JSONObject.toJavaObject(json, FaceSearchReturn.class);
+                        Thread_FaceSearch_Do = true;
+                    }
+                }
+            }
+        }.start();
+
     }
 
     @Override
     public  List<Sign_List> List_Init(){
         namelist.clear();
         own_sql_select = SQL_LIST_CODE;
-        pool.execute(thread_SQL_Select);
-        while (!Thread_SQL_Select_Done);
-//        new Thread(thread_SQL_Select).start();
-//        while (!Thread_SQL_Select_Done);
-        Thread_SQL_Select_Done = false;
+//        pool.execute(thread_SQL_Select);
+        Thread_SQL_Select_Do = false;
+        while (!Thread_SQL_Select_Do);
+        Thread_SQL_Select_Do = true;
         return namelist;
     }
 
@@ -80,9 +149,10 @@ public class login_model implements login_contract.login_ModelInterface{
         register_name=name;
         register_account=account;
         own_sql_select = SQL_SINGLE_SEARCH_CODE;
-        pool.execute(thread_SQL_Select);
-        while (!Thread_SQL_Select_Done);
-        Thread_SQL_Select_Done=false;
+//        pool.execute(thread_SQL_Select);
+        Thread_SQL_Select_Do = false;
+        while (!Thread_SQL_Select_Do);
+        Thread_SQL_Select_Do=true;
         if (person_in/*数据库中有对应值*/){
             login_return.BackWith_NameRepeat();
         }
@@ -96,84 +166,89 @@ public class login_model implements login_contract.login_ModelInterface{
         }
     }
 
-    Thread thread_SQL_insert=new Thread(){
-        @Override
-        public void run(){
-            if (own_sql_insert)
-            {
-                Insert_Return = SQL_Insert.InsertSql2(faceSearchReturn.getResult().getUser_list().get(0).getUser_id());
-                Thread_insert_Done = true;
-            }
-            else {
-                Insert_Return = SQL_Insert.InsertSql1(register_name, register_account);
-                Thread_insert_Done = true;
-            }
-        }
-    };
+//    Thread thread_SQL_insert=new Thread(){
+//        @Override
+//        public void run(){
+//            while (true) {
+//                if (!Thread_insert_Do) {
+//                    if (own_sql_insert) {
+//                        Insert_Return = SQL_Insert.InsertSql2(faceSearchReturn.getResult().getUser_list().get(0).getUser_id());
+//                        Thread_insert_Do = true;
+//                    } else {
+//                        Insert_Return = SQL_Insert.InsertSql1(register_name, register_account);
+//                        Thread_insert_Do = true;
+//                    }
+//                }
+//            }
+//        }
+//    };
 
-    Thread thread_SQL_Select=new Thread(){
-        @Override
-        public void run(){
-            namelist.clear();
-            if (own_sql_select==SQL_LIST_CODE){
-                SQL_Select.Select_All();
-                Thread_SQL_Select_Done = true;
-            }
+//    Thread thread_SQL_Select=new Thread(){
+//        @Override
+//        public void run(){
+//            namelist.clear();
+//            if (own_sql_select==SQL_LIST_CODE){
+//                SQL_Select.Select_All();
+//                Thread_SQL_Select_Done = true;
+//            }
+//
+//            else if(own_sql_select==SQL_SINGLE_SEARCH_CODE){
+//                SQL_Select.Select_Match(register_account);
+//                            person_in = !namelist.isEmpty();
+//                             Thread_SQL_Select_Done = true;
+//                }
+//
+//            else if(own_sql_select==SQL_SIGN_SEARCH_CODE){
+//                SQL_Select.Select_Sign(faceSearchReturn.getResult().getUser_list().get(0).getUser_id());
+//                person_in = !namelist.isEmpty();
+//                Thread_SQL_Select_Done = true;
+//            }
+//        }
+//    };
 
-            else if(own_sql_select==SQL_SINGLE_SEARCH_CODE){
-                SQL_Select.Select_Match(register_account);
-                            person_in = !namelist.isEmpty();
-                             Thread_SQL_Select_Done = true;
-                }
+//    Thread thread_FaceAdd = new Thread(){
+//        @Override
+//        public void run() {
+//            //FaceAddReturn faceAddReturn = new Gson().fromJson(FaceAdd.add("2","027d8308a2ec665acb1bdf63e513bcb9",AccessToken),FaceAddReturn.class);
+//            JSON json = JSON.parseObject(FaceAdd.add(Face_account,Base64Util.encode(Face_Byte),AccessToken));
+//            faceAddReturn = JSONObject.toJavaObject(json, FaceAddReturn.class);
+//            Thread_FaceAdd_Done = true;
+//        }
+//    }; //接收完毕后可以在或者使用布尔变量改变后销毁线程
 
-            else if(own_sql_select==SQL_SIGN_SEARCH_CODE){
-                SQL_Select.Select_Sign(faceSearchReturn.getResult().getUser_list().get(0).getUser_id());
-                person_in = !namelist.isEmpty();
-                Thread_SQL_Select_Done = true;
-            }
-        }
-    };
-
-    Thread thread_FaceAdd = new Thread(){
-        @Override
-        public void run() {
-            //FaceAddReturn faceAddReturn = new Gson().fromJson(FaceAdd.add("2","027d8308a2ec665acb1bdf63e513bcb9",AccessToken),FaceAddReturn.class);
-            JSON json = JSON.parseObject(FaceAdd.add(Face_account,Base64Util.encode(Face_Byte),AccessToken));
-            faceAddReturn = JSONObject.toJavaObject(json, FaceAddReturn.class);
-            Thread_FaceAdd_Done = true;
-        }
-    }; //接收完毕后可以在或者使用布尔变量改变后销毁线程
-
-    Thread thread_FaceSearch = new Thread(){
-        @Override
-        public void run() {
-            //FaceAddReturn faceAddReturn = new Gson().fromJson(FaceAdd.add("2","027d8308a2ec665acb1bdf63e513bcb9",AccessToken),FaceAddReturn.class);
-            JSON json = JSON.parseObject(FaceSearch.search(Base64Util.encode(Face_Byte),AccessToken));
-            faceSearchReturn = JSONObject.toJavaObject(json, FaceSearchReturn.class);
-            Thread_FaceSearch_Done = true;
-            //System.out.println(faceSearchReturn.getResult().getUser_list().get(0).getScore());
-        }
-    }; //接收完毕后可以在或者使用布尔变量改变后销毁线程
+//    Thread thread_FaceSearch = new Thread(){
+//        @Override
+//        public void run() {
+//            //FaceAddReturn faceAddReturn = new Gson().fromJson(FaceAdd.add("2","027d8308a2ec665acb1bdf63e513bcb9",AccessToken),FaceAddReturn.class);
+//            JSON json = JSON.parseObject(FaceSearch.search(Base64Util.encode(Face_Byte),AccessToken));
+//            faceSearchReturn = JSONObject.toJavaObject(json, FaceSearchReturn.class);
+//            Thread_FaceSearch_Done = true;
+//            //System.out.println(faceSearchReturn.getResult().getUser_list().get(0).getScore());
+//        }
+//    }; //接收完毕后可以在或者使用布尔变量改变后销毁线程
     // pool.execute(thread_FaceAdd);
     @Override
     public void FaceCheck_Log(byte[] bt,final Login_Return login_return) {
         Face_Byte = bt;
-        pool.execute(thread_FaceSearch);
-        while (!Thread_FaceSearch_Done) ; //等待线程结束
-        Thread_FaceSearch_Done = false;
+//        pool.execute(thread_FaceSearch);
+        Thread_FaceSearch_Do = false;
+        while (!Thread_FaceSearch_Do) ; //等待线程结束
+//        Thread_FaceSearch_Do = true;
         //判断识别指数是否高于95
         if (faceSearchReturn.getError_code() == 0) {
             if (faceSearchReturn.getResult().getUser_list().get(0).getScore() > 95) {//判断是相同照片
                 login_return.BackWith_FaceRepeat(faceSearchReturn.getResult().getUser_list().get(0).getUser_id());
             } else {
-                pool.execute(thread_FaceAdd);
-                while (!Thread_FaceAdd_Done) ; //等待线程结束
-                Thread_FaceAdd_Done = false;
+//                pool.execute(thread_FaceAdd);
+                Thread_FaceAdd_Do = false;
+                while (!Thread_FaceAdd_Do) ; //等待线程结束
+//                Thread_FaceAdd_Do = true;
                 if (faceAddReturn.getError_code() == 0) {
                     own_sql_insert=false;
-                    pool.execute(thread_SQL_insert);
-                    while (!Thread_insert_Done);
-                    Thread_insert_Done=false;
+//                    pool.execute(thread_SQL_insert);
+                    Thread_insert_Do = false;
+                    while (!Thread_insert_Do);
+//                    Thread_insert_Do=true;
                     if(Insert_Return==201){
                         login_return.BackWith_FaceFail();//注册失败
                     }
@@ -193,24 +268,27 @@ public class login_model implements login_contract.login_ModelInterface{
     @Override
     public void FaceCheck_Sign(byte[] bt,final Sign_Return sign_return){
         Face_Byte = bt;
-        pool.execute(thread_FaceSearch);
-        while (!Thread_FaceSearch_Done) ; //等待线程结束
-        Thread_FaceSearch_Done = false;
+//        pool.execute(thread_FaceSearch);
+        Thread_FaceSearch_Do = false;
+        while (!Thread_FaceSearch_Do) ; //等待线程结束
+//        Thread_FaceSearch_Done = false;
         //判断识别指数是否高于95
         if (faceSearchReturn.getError_code() == 0) {
             if (faceSearchReturn.getResult().getUser_list().get(0).getScore() > 95) {//判断是相同照片
                 own_sql_select = SQL_SIGN_SEARCH_CODE;
-                pool.execute(thread_SQL_Select);
-                while (!Thread_SQL_Select_Done);
-                Thread_SQL_Select_Done = false;
+//                pool.execute(thread_SQL_Select);
+                Thread_SQL_Select_Do = false;
+                while (!Thread_SQL_Select_Do);
+                Thread_SQL_Select_Do = true;
                 if (person_in) {                            //判断此人是否已经签到
                     sign_return.BackWith_FaceAlready();
                 }
                 else{
                     own_sql_insert=true;
-                    pool.execute(thread_SQL_insert);
-                    while (!Thread_insert_Done);
-                    Thread_insert_Done=false;
+//                    pool.execute(thread_SQL_insert);
+                    Thread_insert_Do = false;
+                    while (!Thread_insert_Do);
+//                    Thread_insert_Do=true;
                     if(Insert_Return==203){
                         sign_return.BackWith_SignFail();
                         //签到失败
