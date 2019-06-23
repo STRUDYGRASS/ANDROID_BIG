@@ -65,7 +65,7 @@ public class login_model implements login_contract.login_ModelInterface{
 
     @Override
     public  List<Sign_List> List_Init(){
-        namelist = new ArrayList<Sign_List>();
+        namelist.clear();
         own_sql_select = SQL_LIST_CODE;
         pool.execute(thread_SQL_Select);
         while (!Thread_SQL_Select_Done);
@@ -113,6 +113,7 @@ public class login_model implements login_contract.login_ModelInterface{
     Thread thread_SQL_Select=new Thread(){
         @Override
         public void run(){
+            namelist.clear();
             if (own_sql_select==SQL_LIST_CODE){
                 SQL_Select.Select_All();
                 Thread_SQL_Select_Done = true;
@@ -121,14 +122,12 @@ public class login_model implements login_contract.login_ModelInterface{
             else if(own_sql_select==SQL_SINGLE_SEARCH_CODE){
                 SQL_Select.Select_Match(register_account);
                             person_in = !namelist.isEmpty();
-                            namelist.clear();
                              Thread_SQL_Select_Done = true;
                 }
 
             else if(own_sql_select==SQL_SIGN_SEARCH_CODE){
                 SQL_Select.Select_Sign(faceSearchReturn.getResult().getUser_list().get(0).getUser_id());
                 person_in = !namelist.isEmpty();
-                namelist.clear();
                 Thread_SQL_Select_Done = true;
             }
         }

@@ -86,6 +86,11 @@ public class login_presenter extends BasePresenter<login_contract.login_ViewInte
     }
 
     @Override
+    public void Login_Log_Check(){
+        getView().Checkin_Log();
+    }
+
+    @Override
     public void Register_Submit(String name, String account){
         loginModel.CheckOut_Count(name,account,login_return);
     }

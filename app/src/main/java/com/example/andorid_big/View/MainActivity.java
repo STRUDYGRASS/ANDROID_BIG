@@ -11,8 +11,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
@@ -81,6 +83,16 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
             mlogin_presenter.getView().ShowDialogWith("必须输入姓名和学号！");
         }
     }
+    public void Main_record(View view) {
+        mlogin_presenter.Login_Log_Check();
+        ListView list = findViewById(R.id.list_person);
+        sign_lists = mlogin_presenter.ListInit();
+
+        ListAdapter adapter = new ListAdapter(this, R.layout.list_play, sign_lists);
+        list.setAdapter(adapter);
+    }
+
+
     public void Interface_return(View view){
         mlogin_presenter.Main_Check();
     }
@@ -115,10 +127,13 @@ public class MainActivity extends BaseActivity<login_contract.login_ViewInterfac
 
     @Override
     public void Checkin_Login() {
-        setContentView(R.layout.interface_signin);
+        setContentView(R.layout.main_interface);
         Start_Camera_Sign();
-        sign_lists = mlogin_presenter.ListInit();
-        //还未写setadapter到具体view
+    }
+
+    @Override
+    public void Checkin_Log(){
+        setContentView(R.layout.interface_signin);
     }
 
 

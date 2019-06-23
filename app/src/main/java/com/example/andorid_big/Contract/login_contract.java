@@ -12,6 +12,7 @@ public interface login_contract {
         void Checkin_Regester();
         void Checkin_Login();
         void Checkin_Main();
+        void Checkin_Log();
 
         void Start_Camera_Log();
         void FaceCheck(byte[] bt,int MARK);
@@ -24,6 +25,7 @@ public interface login_contract {
         void Login_Sign_Check();
         void Login_Register_Check();
         void Main_Check();
+        void Login_Log_Check();
         /***************************函数调用*****************************/
         void Register_Submit(String name, String account);
 
